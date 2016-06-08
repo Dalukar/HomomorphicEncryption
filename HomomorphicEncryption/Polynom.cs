@@ -106,14 +106,7 @@ namespace HomomorphicEncryption
         {
             // пох что оператор ^ должен делать XOR, тут это возведение в степень
             Polynom B;
-            if(power !=0)
-            {
-                B = new Polynom(A.polynomCoefs.Length * power);
-            }
-            else 
-            { 
-                B = new Polynom(1);
-            }
+            B = new Polynom(1);
             B.polynomCoefs[0] = 1;
             for (int i = 0; i < power; i++ )
             {
