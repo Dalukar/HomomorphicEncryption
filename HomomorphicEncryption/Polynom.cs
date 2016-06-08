@@ -12,10 +12,12 @@ namespace HomomorphicEncryption
         double[] polynomCoefs;
         public Polynom(int coefs)
         {
+            // конструктор
             polynomCoefs = new double[coefs];
         }
         public Polynom(int number, int nBase)
         {
+            // еще конструктор
             List<double> polynomCoefsList = new List<double>();
             int rem = number;
             while(rem !=0)
@@ -27,10 +29,12 @@ namespace HomomorphicEncryption
         }
         public Polynom(double[] coefs)
         {
+            // тоже конструктор
             polynomCoefs = (double[])coefs.Clone();
         }
         public override string ToString()
         {
+            // вывод в строку
             string ret = "";
             for(int i = 0; i < polynomCoefs.Length; i++)
             {
@@ -40,6 +44,7 @@ namespace HomomorphicEncryption
         }
         public Polynom Composition(Polynom p2)
         {
+            // вычисление композиции
             Polynom resultPolynom = new Polynom((p2.polynomCoefs.Length - 1) * (this.polynomCoefs.Length - 1) + 1);
             for (int i = 0; i < this.polynomCoefs.Length; i++)
             {
@@ -49,15 +54,17 @@ namespace HomomorphicEncryption
         }
         public double Value(int x)
         {
+            // вычисление значения от аргумента х
             double result = 0;
             for (int i = 0; i < polynomCoefs.Length; i++)
             {
-                result += Convert.ToInt32(Math.Pow(x, i)) * polynomCoefs[i];
+                result += Convert.ToInt64(Math.Pow(x, i)) * polynomCoefs[i];
             }
             return result;
         }
         public static Polynom operator *(Polynom A, Polynom B)
         {
+            // умножение
             int maxResultLength = (A.polynomCoefs.Length - 1) + (B.polynomCoefs.Length - 1) + 1;
             Polynom C = new Polynom(maxResultLength);
             for (int i = 0; i < A.polynomCoefs.Length; i++)
@@ -72,6 +79,7 @@ namespace HomomorphicEncryption
 
         public static Polynom operator +(Polynom A, Polynom B)
         {
+            // сложение
             if(B.polynomCoefs.Length > A.polynomCoefs.Length)
             {
                 Polynom tmp = A;
@@ -95,6 +103,7 @@ namespace HomomorphicEncryption
 
         public static Polynom operator -(Polynom A, Polynom B)
         {
+            // вычитание
             //лень нормально делать
             for (int i = 0; i < B.polynomCoefs.Length; i++)
             {
@@ -123,6 +132,7 @@ namespace HomomorphicEncryption
 
         public static Polynom operator *(Polynom A, double number)
         {
+            // умножение на число
             Polynom B = new Polynom(A.polynomCoefs.Length);
             for (int i = 0; i < B.polynomCoefs.Length; i++)
             {
@@ -133,6 +143,8 @@ namespace HomomorphicEncryption
 
         public static Polynom[] operator /(Polynom A, Polynom B)
         {
+            // деление
+            // возвращает массив из результата и остатка
             //хрень короче, можно проще сделать (наверно)
             Polynom tmpA = new Polynom((double[]) A.polynomCoefs.Clone());
             int lengthA = A.polynomCoefs.Length;

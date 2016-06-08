@@ -19,6 +19,7 @@ namespace HomomorphicEncryption
             int xr;
             Polynom sx;
 
+            // если есть входные аргументы, юзаем их
             if(args.Length !=0)
             {
                 a = Convert.ToInt32(args[0]);
@@ -30,24 +31,28 @@ namespace HomomorphicEncryption
                 Console.WriteLine("no arguments passed, using test values...");
             }
 
+            // генерим полином и закрытый ключ
             int sqrt = Convert.ToInt32(Math.Floor(Math.Pow(a < b ? a : b, (double)1 / nRoots)));
             Random rnd = new Random();
             sqrt = rnd.Next(2, sqrt + 1);
             nBase = Convert.ToInt32(Math.Pow(sqrt, nRoots));
-            //nBase = 7;
             int n = rnd.Next(-10, 10); // хз какой диапазон брать
             xr = sqrt - n;
             sx = (new Polynom(new double[] { n, 1 })) ^ nRoots;
 
+            // преобразумем числа в полиномы
             Polynom p1 = new Polynom(a, nBase);
             Polynom p2 = new Polynom(b, nBase);
 
+            // композиция с S(x)
             Polynom c1 = p1.Composition(sx);
             Polynom c2 = p2.Composition(sx);
 
+            // результат деления
             Polynom[] divP = (p1 / p2);
             Polynom[] divC = (c1 / c2);
 
+            // вывод в консоль
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("p1: " + p1);
             Console.WriteLine("p2: " + p2);
@@ -70,12 +75,12 @@ namespace HomomorphicEncryption
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("p1 / p2: " + divP[0]);
             Console.WriteLine("remainder:\t" + divP[1]);
-            Console.WriteLine("(p1 / p2)(nBase): " + divP[0].Value(nBase));
-            Console.WriteLine("remainder:\t" + divP[1].Value(nBase) + "/" + b);
+            Console.WriteLine("(p1 / p2)(nBase): " +Math.Round( divP[0].Value(nBase),2));
+            Console.WriteLine("remainder:\t" + Math.Round(divP[1].Value(nBase), 2) + "/" + b);
             Console.WriteLine("c1 / c2: " + divC[0]);
             Console.WriteLine("remainder:\t" + divC[1]);
-            Console.WriteLine("(c1 / c2)(xr): " + divC[0].Value(xr));
-            Console.WriteLine("remainder:\t" + divC[1].Value(xr) + "/" + b);
+            Console.WriteLine("(c1 / c2)(xr): " + Math.Round(divC[0].Value(xr),2));
+            Console.WriteLine("remainder:\t" + Math.Round(divC[1].Value(xr),2) + "/" + b);
             Console.WriteLine("----------------------------------------------");
 
             Console.ReadKey();
