@@ -9,14 +9,14 @@ namespace HomomorphicEncryption
 {
     class Polynom
     {
-        int[] polynomCoefs;
+        double[] polynomCoefs;
         public Polynom(int coefs)
         {
-            polynomCoefs = new int[coefs];
+            polynomCoefs = new double[coefs];
         }
         public Polynom(int number, int nBase)
         {
-            List<int> polynomCoefsList = new List<int>();
+            List<double> polynomCoefsList = new List<double>();
             int rem = number;
             while(rem !=0)
             {
@@ -25,16 +25,16 @@ namespace HomomorphicEncryption
             }
             polynomCoefs = polynomCoefsList.ToArray();
         }
-        public Polynom(int[] coefs)
+        public Polynom(double[] coefs)
         {
-            polynomCoefs = (int[]) coefs.Clone();
+            polynomCoefs = (double[])coefs.Clone();
         }
         public override string ToString()
         {
             string ret = "";
             for(int i = 0; i < polynomCoefs.Length; i++)
             {
-                ret = polynomCoefs[i] + "x^" + i + " " + ret;
+                ret = Math.Round(polynomCoefs[i], 2) + "x^" + i + " " + ret;
             }
             return ret;
         }
@@ -47,9 +47,9 @@ namespace HomomorphicEncryption
             }
             return resultPolynom;
         }
-        public int Value(int x)
+        public double Value(int x)
         {
-            int result = 0;
+            double result = 0;
             for (int i = 0; i < polynomCoefs.Length; i++)
             {
                 result += Convert.ToInt32(Math.Pow(x, i)) * polynomCoefs[i];
@@ -93,7 +93,35 @@ namespace HomomorphicEncryption
             return C;
         }
 
-        public static Polynom operator *(Polynom A, int number)
+        public static Polynom operator -(Polynom A, Polynom B)
+        {
+            //лень нормально делать
+            for (int i = 0; i < B.polynomCoefs.Length; i++)
+            {
+                B.polynomCoefs[i] = -B.polynomCoefs[i];
+            }
+            if (B.polynomCoefs.Length > A.polynomCoefs.Length)
+            {
+                Polynom tmp = A;
+                A = B;
+                B = tmp;
+            }
+            Polynom C = new Polynom(A.polynomCoefs.Length);
+            for (int i = 0; i < C.polynomCoefs.Length; i++)
+            {
+                if (i < B.polynomCoefs.Length)
+                {
+                    C.polynomCoefs[i] = A.polynomCoefs[i] + B.polynomCoefs[i];
+                }
+                else
+                {
+                    C.polynomCoefs[i] = A.polynomCoefs[i];
+                }
+            }
+            return C;
+        }
+
+        public static Polynom operator *(Polynom A, double number)
         {
             Polynom B = new Polynom(A.polynomCoefs.Length);
             for (int i = 0; i < B.polynomCoefs.Length; i++)
@@ -102,6 +130,34 @@ namespace HomomorphicEncryption
             }
             return B;
         }
+
+        public static Polynom[] operator /(Polynom A, Polynom B)
+        {
+            //хрень короче, можно проще сделать (наверно)
+            Polynom tmpA = new Polynom((double[]) A.polynomCoefs.Clone());
+            int lengthA = A.polynomCoefs.Length;
+            int highCoefA = A.polynomCoefs.Length - 1;
+            int highCoefB = B.polynomCoefs.Length - 1;
+            Polynom[] C = new Polynom[2];
+            C[0] = new Polynom(highCoefA - highCoefB + 1);
+            while(highCoefA >= highCoefB)
+            {
+                if (tmpA.polynomCoefs[highCoefA] != 0)
+                {
+                    double coef = tmpA.polynomCoefs[highCoefA] / B.polynomCoefs[highCoefB];
+                    int exp = highCoefA - highCoefB;
+                    Polynom tmp = new Polynom(new double[lengthA]);
+                    tmp.polynomCoefs[exp] = coef;
+                    C[0] += tmp;
+                    tmp = tmp * B;
+                    tmpA -= tmp;
+                }
+                highCoefA -= 1;
+            }
+            C[1] = tmpA;
+            return C;
+        }
+      
         public static Polynom operator ^(Polynom A, int power)
         {
             // пох что оператор ^ должен делать XOR, тут это возведение в степень
