@@ -100,7 +100,7 @@ namespace HomomorphicEncryption
             Console.WriteLine("maxPow: " + maxPow);
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("+++++++");
-            for (int i = 2; i <= maxPow + 2; i++)
+            for (int i = 2; i <= maxPow; i++)
             {
                 int length1 = i;
                 int length2 = maxPow - i + 2;
