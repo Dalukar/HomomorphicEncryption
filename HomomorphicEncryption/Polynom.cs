@@ -9,7 +9,7 @@ namespace HomomorphicEncryption
 {
     class Polynom
     {
-        double[] polynomCoefs;
+        public double[] polynomCoefs;
         public Polynom(int coefs)
         {
             // конструктор
@@ -181,6 +181,31 @@ namespace HomomorphicEncryption
                 B = B * A;
             }
             return B;
+        }
+
+        public static bool operator ==(Polynom A, Polynom B)
+        {
+            // оператор равенства
+            if (A.polynomCoefs.Length != B.polynomCoefs.Length)
+            {
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < B.polynomCoefs.Length; i++)
+                {
+                    if (A.polynomCoefs[i] != B.polynomCoefs[i])
+                        return false;
+                }
+            }
+            return true;
+
+        }
+        public static bool operator !=(Polynom A, Polynom B)
+        {
+            // оператор неравенства
+            return !(A==B);
+
         }
     }
 }

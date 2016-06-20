@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace HomomorphicEncryption
 {
@@ -36,7 +37,7 @@ namespace HomomorphicEncryption
             Random rnd = new Random();
             sqrt = rnd.Next(2, sqrt + 1);
             nBase = Convert.ToInt32(Math.Pow(sqrt, nRoots));
-            int n = rnd.Next(-10, 10); // хз какой диапазон брать
+            int n = rnd.Next(1, 10); // хз какой диапазон брать
             xr = sqrt - n;
             sx = (new Polynom(new double[] { n, 1 })) ^ nRoots;
 
@@ -83,7 +84,48 @@ namespace HomomorphicEncryption
             Console.WriteLine("remainder:\t" + Math.Round(divC[1].Value(xr),2) + "/" + b);
             Console.WriteLine("----------------------------------------------");
 
+            BruteDecomposition(c1,nBase);
+
             Console.ReadKey();
+        }
+        public static void BruteDecomposition(Polynom pol, int maxCoef)
+        {
+            int maxPow = pol.polynomCoefs.Length;
+            Stopwatch timer = new Stopwatch();
+            int attempts = 0;
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("trying to decompose polynome: " + pol);
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("maxCoef: " + maxCoef);
+            Console.WriteLine("maxPow: " + maxPow);
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("+++++++");
+            for (int i = 2; i <= maxPow + 2; i++)
+            {
+                int length1 = i;
+                int length2 = maxPow - i + 2;
+                //
+                timer.Start();
+                for (int k1 = 1; k1 < Math.Pow(maxCoef, length1); k1++)
+                {
+                    for (int k2 = 1; k2 < Math.Pow(maxCoef, length2); k2++)
+                    {
+                        attempts++;
+                        Polynom pol1 = new Polynom(k1, maxCoef);
+                        Polynom pol2 = new Polynom(k2, maxCoef);
+                        if (pol == pol1.Composition(pol2))
+                        {
+                            Console.WriteLine("p1: " + pol1);
+                            Console.WriteLine("p2: " + pol2);
+                            Console.WriteLine("+++++++");
+                        }
+                    }
+                }
+
+            }
+            timer.Stop();
+            Console.WriteLine("Attempts: " + attempts);
+            Console.WriteLine("Total time: " + Math.Round((double)timer.ElapsedMilliseconds/1000, 2) + " sec");
         }
     }
 }
